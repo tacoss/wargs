@@ -8,8 +8,20 @@ describe 'wargs()', ->
   it 'can receive a string', ->
     expect(wargs('')).toEqual { data: {}, flags: {}, params: {} }
 
+    argv = '-x y i=j --foo "baz buzz" o:"p q" bazzinga -a=b --m=n p:q a="b c"'
+
+    expect(wargs(argv).data).toEqual { a: 'b c', i: 'j', bazzinga: true }
+    expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
+    expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
+
   it 'can receive an array (argv-like)', ->
     expect(wargs([])).toEqual { data: {}, flags: {}, params: {} }
+
+    argv = ['-x', 'y', 'i=j', '--foo', 'baz buzz', 'o:p q', 'bazzinga', '-a=b', '--m=n', 'p:q', 'a=b c']
+
+    expect(wargs(argv).data).toEqual { a: 'b c', i: 'j', bazzinga: true }
+    expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
+    expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
 
   it 'can receive even almost anything (fallback)', ->
     expect(wargs(NaN)).toEqual { data: {}, flags: {}, params: {} }
@@ -24,11 +36,16 @@ describe 'wargs()', ->
     expect(wargs(420)).toEqual { data: { 420: true }, flags: {}, params: {} }
     expect(wargs(null)).toEqual  { data: {}, flags: {}, params: {} }
 
-    expect(wargs(new Date(2017, 0, 24))).toEqual {
-      data: { 24: true, 2017: true, Tue: true, Jan: true, 'GMT-0600': true, '(CST)': true }
-      flags: {}
-      params: { '00': '00:00' }
-    }
+    date = new Date(2017, 0, 24)
+    _GMT = String(date).split(' ')[5]
+
+    expect(wargs(date).data[24]).toEqual true
+    expect(wargs(date).data[2017]).toEqual true
+    expect(wargs(date).data.Tue).toEqual true
+    expect(wargs(date).data.Jan).toEqual true
+    expect(wargs(date).data[_GMT]).toEqual true
+    expect(wargs(date).data['(CST)']).toEqual true
+    expect(wargs(date).params).toEqual { '00': '00:00' }
 
     expect(wargs(undefined)).toEqual { data: {}, flags: {}, params: {} }
     expect(wargs(Infinity)).toEqual { data: { Infinity: true }, flags: {}, params: {} }
