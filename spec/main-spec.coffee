@@ -109,13 +109,16 @@ describe 'wargs()', ->
   it 'supports escaped `key:foo\\ bar` params', ->
     expect(wargs('key:foo\\ bar').params.key).toEqual 'foo bar'
 
-  it 'supports everything else as boolean values', ->
+  it 'supports everything else as data values', ->
     expect(wargs('x').data.x).toBe true
     expect(wargs('x y').data.x).toBe true
     expect(wargs('x y').data.y).toBe true
     expect(wargs('x\\ y z').data['x y']).toBe true
     expect(wargs('x\\ y z').data.z).toBe true
     expect(wargs('\\ ').data[' ']).toBe true
+    expect(wargs('~"bar baz"').data['~']).toEqual 'bar baz'
+    expect(wargs('foo"bar baz"').data.foo).toEqual 'bar baz'
+    expect(wargs('foo "bar baz"').data.foo).toEqual 'bar baz'
 
   it 'will use a custom formatting function' , ->
     expect(wargs('-x y', (s) -> s.toUpperCase()).flags.x).toEqual 'Y'
