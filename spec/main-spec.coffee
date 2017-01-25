@@ -52,6 +52,10 @@ describe 'wargs()', ->
     expect(wargs('-x -y').flags.y).toBe true
     expect(wargs('-x -y z').flags.y).toEqual 'z'
 
+  it 'supports single `-x=y` flags', ->
+    expect(wargs('-x=').flags.x).toEqual ''
+    expect(wargs('-x=y').flags.x).toEqual 'y'
+
   it 'supports quoted `-y "foo bar"` flags', ->
     expect(wargs('-y "foo bar"').flags.y).toEqual 'foo bar'
 
@@ -66,7 +70,12 @@ describe 'wargs()', ->
     expect(wargs('--y "foo bar"').flags.y).toEqual 'foo bar'
 
   it 'supports single `key=value` params', ->
+    expect(wargs('x=').data.x).toEqual ''
     expect(wargs('x=y').data.x).toEqual 'y'
+
+  it 'supports single `--key=value` flags', ->
+    expect(wargs('--key=').flags.key).toEqual ''
+    expect(wargs('--key=value').flags.key).toEqual 'value'
 
   it 'supports quoted `key="foo bar"` params', ->
     expect(wargs('key="foo bar"').data.key).toEqual 'foo bar'
@@ -75,6 +84,7 @@ describe 'wargs()', ->
     expect(wargs('key="baz \\"buzz\\" bazzinga"').data.key).toEqual 'baz "buzz" bazzinga'
 
   it 'supports single `key:value` params', ->
+    expect(wargs('x:').params.x).toEqual ''
     expect(wargs('x:y').params.x).toEqual 'y'
 
   it 'supports escaped `key:foo\\ bar` params', ->
