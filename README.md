@@ -10,7 +10,7 @@ Instead, I used regular expressions for extracting values, flags and other kind 
 
 I've tried commander, minimist, yargs, etc. but no one fulfilled my exact requirements, e.g.
 
-```
+```js
 const str = '/ _csrf=`token` --json accept:"text/plain; charset=utf8"';
 const argv = ['/', '_csrf=`token`', '--json', 'accept:text/plain; charset=utf8'];
 ```
