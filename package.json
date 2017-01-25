@@ -1,0 +1,25 @@
+{
+  "name": "wargs",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "description": "Wrong args parser",
+  "author": "Alvaro Cabrera <pateketrueke@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "jasmine-node spec --coffee --verbose --autoTest --captureExceptions --watchFolders lib",
+    "lint": "eslint bin lib spec",
+    "spec": "jasmine-node spec --coffee --noStackTrace --captureExceptions",
+    "cover": "istanbul cover --root lib --x '**/spec/**' -- jasmine-node --coffee spec",
+    "cover:up": "codecov --file=coverage/lcov.info --disable=gcov -e TRAVIS_NODE_VERSION",
+    "example": "node examples/_runner.js",
+    "test": "yarn lint && yarn cover"
+  },
+  "devDependencies": {
+    "codecov": "^1.0.1",
+    "eslint": "^3.5.0",
+    "eslint-config-airbnb-base": "^5.0.3",
+    "eslint-plugin-import": "^1.14.0",
+    "istanbul": "^0.4.3",
+    "jasmine-node": "2.0.0-beta4"
+  }
+}
