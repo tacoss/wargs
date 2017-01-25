@@ -23,6 +23,18 @@ describe 'wargs()', ->
     expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
     expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
 
+    a = wargs('/ _csrf=`token` --json accept:"text/plain; charset=utf8"')
+    b = wargs(['/', '_csrf=`token`', '--json', 'accept:text/plain; charset=utf8'])
+
+    c = {
+      data: { '/': true, _csrf: '`token`' }
+      flags: { json: true }
+      params: { accept: 'text/plain; charset=utf8' }
+    }
+
+    expect(a).toEqual b
+    expect(a).toEqual c
+
   it 'can receive even almost anything (fallback)', ->
     expect(wargs(NaN)).toEqual { data: {}, flags: {}, params: {} }
 
