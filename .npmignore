@@ -1,0 +1,5 @@
+*.json
+*.log
+spec
+coverage
+node_modules
