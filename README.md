@@ -56,5 +56,5 @@ wargs('-x y', { format: v => v.toUpperCase() }).flags; // { x: 'Y' }
 ### Fun facts
 
 - When I was looking for a name for this module I found that `xargs`, `yargs` and `zargs` already existed
-- Then I thought that I was totally wrong on calling this module a "parser" for command line arguments
+- I'm totally wrong on calling this module a "parser" for command line arguments, don't be rude
 - Finally, I discovered that [wargs](http://gameofthrones.wikia.com/wiki/Warg) are a thing from GoT
