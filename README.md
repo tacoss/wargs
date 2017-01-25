@@ -52,3 +52,9 @@ wargs('-x y', { format: v => v.toUpperCase() }).flags; // { x: 'Y' }
 - `asBool` &mdash; used as default value for single args
 - `asArray` &mdash; output data as an array of values instead
 - `camelCase` &mdash; normalize keys from `--camel-case` to `camelCase`
+
+### Fun facts
+
+- When I was looking for a name for this module I found that `xargs`, `yargs` and `zargs` already existed
+- Then I thought that I was totally wrong on calling this module a "parser" for command line arguments
+- Finally, I discovered that [wargs](http://gameofthrones.wikia.com/wiki/Warg) are a thing from GoT
