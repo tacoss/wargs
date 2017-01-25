@@ -44,3 +44,46 @@ describe 'wargs()', ->
       flags: {}
       params: {}
     }
+
+  it 'supports single `-x` flags', ->
+    expect(wargs('-x').flags.x).toBe true
+    expect(wargs('-x y').flags.x).toEqual 'y'
+    expect(wargs('-x -y').flags.x).toBe true
+    expect(wargs('-x -y').flags.y).toBe true
+    expect(wargs('-x -y z').flags.y).toEqual 'z'
+
+  it 'supports quoted `-y "foo bar"` flags', ->
+    expect(wargs('-y "foo bar"').flags.y).toEqual 'foo bar'
+
+  it 'supports double `--x` flags', ->
+    expect(wargs('--x').flags.x).toBe true
+    expect(wargs('--x y').flags.x).toEqual 'y'
+    expect(wargs('--x --y').flags.x).toBe true
+    expect(wargs('--x --y').flags.y).toBe true
+    expect(wargs('--x --y z').flags.y).toEqual 'z'
+
+  it 'supports quoted `--y "foo bar"` flags', ->
+    expect(wargs('--y "foo bar"').flags.y).toEqual 'foo bar'
+
+  it 'supports single `key=value` params', ->
+    expect(wargs('x=y').data.x).toEqual 'y'
+
+  it 'supports quoted `key="foo bar"` params', ->
+    expect(wargs('key="foo bar"').data.key).toEqual 'foo bar'
+
+  it 'supports scaped `key="baz \\"buzz\\" bazzinga"` params', ->
+    expect(wargs('key="baz \\"buzz\\" bazzinga"').data.key).toEqual 'baz "buzz" bazzinga'
+
+  it 'supports single `key:value` params', ->
+    expect(wargs('x:y').params.x).toEqual 'y'
+
+  it 'supports escaped `key:foo\\ bar` params', ->
+    expect(wargs('key:foo\\ bar').params.key).toEqual 'foo bar'
+
+  it 'supports everything else as boolean values', ->
+    expect(wargs('x').data.x).toBe true
+    expect(wargs('x y').data.x).toBe true
+    expect(wargs('x y').data.y).toBe true
+    expect(wargs('x\\ y z').data['x y']).toBe true
+    expect(wargs('x\\ y z').data.z).toBe true
+    expect(wargs('\\ ').data[' ']).toBe true
