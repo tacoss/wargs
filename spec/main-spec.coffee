@@ -122,7 +122,7 @@ describe 'wargs()', ->
     expect(wargs('-x y', format: (s) -> s.toUpperCase()).flags.x).toEqual 'Y'
 
   it 'will use a custom default for data values', ->
-    expect(wargs('a', default: 'yes').data.a).toEqual 'yes'
+    expect(wargs('a', asBool: 'yes').data.a).toEqual 'yes'
 
   it 'will set all keys as camelCase when enabled', ->
     expect(wargs('--foo-bar "baz buzz"', camelCase: true).flags).toEqual { fooBar: 'baz buzz' }
