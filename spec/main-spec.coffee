@@ -51,9 +51,9 @@ describe 'wargs()', ->
     expect(wargs(Infinity)).toEqual { data: { Infinity: true }, flags: {}, params: {} }
 
     expect(wargs(JSON.stringify(foo: 'bar'))).toEqual {
-      data: {}
+      data: { '{"foo":"bar"}': true }
       flags: {}
-      params: { '{"foo"': '"bar"}' }
+      params: {}
     }
 
     expect(wargs(JSON.stringify(['foo', 'bar']))).toEqual {
@@ -123,4 +123,17 @@ describe 'wargs()', ->
     expect(wargs('a', default: 'yes').data.a).toEqual 'yes'
 
   it 'will set all keys as camelCase when enabled', ->
-    expect(wargs('--foo-bar "baz buzz"', camelize: true).flags).toEqual { fooBar: 'baz buzz' }
+    expect(wargs('--foo-bar "baz buzz"', camelCase: true).flags).toEqual { fooBar: 'baz buzz' }
+
+  it 'will set data as an array of values when enabled', ->
+    expect(wargs('/ foo=bar --json', asArray: true)).toEqual {
+      data: ['/', 'foo']
+      flags: { json: true }
+      params: {}
+    }
+
+    expect(wargs('/ foo=bar --json')).toEqual {
+      data: { '/': true, foo: 'bar' }
+      flags: { json: true }
+      params: {}
+    }
