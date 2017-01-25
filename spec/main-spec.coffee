@@ -114,3 +114,13 @@ describe 'wargs()', ->
     expect(wargs('x\\ y z').data['x y']).toBe true
     expect(wargs('x\\ y z').data.z).toBe true
     expect(wargs('\\ ').data[' ']).toBe true
+
+  it 'will use a custom formatting function' , ->
+    expect(wargs('-x y', (s) -> s.toUpperCase()).flags.x).toEqual 'Y'
+    expect(wargs('-x y', format: (s) -> s.toUpperCase()).flags.x).toEqual 'Y'
+
+  it 'will use a custom default for data values', ->
+    expect(wargs('a', default: 'yes').data.a).toEqual 'yes'
+
+  it 'will set all keys as camelCase when enabled', ->
+    expect(wargs('--foo-bar "baz buzz"', camelize: true).flags).toEqual { fooBar: 'baz buzz' }
