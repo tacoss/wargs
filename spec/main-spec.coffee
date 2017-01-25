@@ -35,20 +35,7 @@ describe 'wargs()', ->
     expect(wargs(-1)).toEqual { data: {}, flags: { 1: true }, params: {} }
     expect(wargs(420)).toEqual { data: { 420: true }, flags: {}, params: {} }
     expect(wargs(null)).toEqual  { data: {}, flags: {}, params: {} }
-
-    # try
-    #   date = new Date(2017, 0, 24)
-    #   _GMT = String(date).split(' ')[5]
-
-    #   expect(wargs(date).data[24]).toEqual true
-    #   expect(wargs(date).data[2017]).toEqual true
-    #   expect(wargs(date).data.Tue).toEqual true
-    #   expect(wargs(date).data.Jan).toEqual true
-    #   expect(wargs(date).data[_GMT]).toEqual true
-    #   expect(wargs(date).data['(CST)']).toEqual true
-    #   expect(wargs(date).params).toEqual { '00': '00:00' }
-    # catch e
-    #   console.log 'DATE FAILED', e
+    expect(wargs('00:00:00').data['00:00:00']).toBe true
 
     expect(wargs(undefined)).toEqual { data: {}, flags: {}, params: {} }
     expect(wargs(Infinity)).toEqual { data: { Infinity: true }, flags: {}, params: {} }
