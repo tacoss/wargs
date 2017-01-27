@@ -3,14 +3,15 @@ wargs = require('../lib')
 # wargs(str|arr, opts|cb, cb)
 describe 'wargs()', ->
   it 'can receive nothing', ->
-    expect(wargs()).toEqual { data: {}, flags: {}, params: {} }
+    expect(wargs()).toEqual { _: [], data: {}, flags: {}, params: {} }
 
   it 'can receive a string', ->
-    expect(wargs('')).toEqual { data: {}, flags: {}, params: {} }
+    expect(wargs('')).toEqual { _: [], data: {}, flags: {}, params: {} }
 
-    argv = '-x y i=j --foo "baz buzz" o:"p q" bazzinga -a=b --m=n p:q a="b c"'
+    argv = '-x y m "n o" i=j --foo "baz buzz" o:"p q" bazzinga -a=b --m=n p:q a="b c"'
 
-    expect(wargs(argv).data).toEqual { a: 'b c', i: 'j', bazzinga: true }
+    expect(wargs(argv)._).toEqual ['m', 'n o', 'bazzinga']
+    expect(wargs(argv).data).toEqual { a: 'b c', i: 'j' }
     expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
     expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
 
@@ -20,11 +21,12 @@ describe 'wargs()', ->
     ''').flags.a).toEqual '-b "c d"'
 
   it 'can receive an array (argv-like)', ->
-    expect(wargs([])).toEqual { data: {}, flags: {}, params: {} }
+    expect(wargs([])).toEqual { _: [], data: {}, flags: {}, params: {} }
 
-    argv = ['-x', 'y', 'i=j', '--foo', 'baz buzz', 'o:p q', 'bazzinga', '-a=b', '--m=n', 'p:q', 'a=b c']
+    argv = ['-x', 'y', 'm', 'n o', 'i=j', '--foo', 'baz buzz', 'o:p q', 'bazzinga', '-a=b', '--m=n', 'p:q', 'a=b c']
 
-    expect(wargs(argv).data).toEqual { a: 'b c', i: 'j', bazzinga: true }
+    expect(wargs(argv)._).toEqual ['m', 'n o', 'bazzinga']
+    expect(wargs(argv).data).toEqual { a: 'b c', i: 'j' }
     expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
     expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
 
@@ -32,7 +34,8 @@ describe 'wargs()', ->
     b = wargs(['/', '_csrf=`token`', '--json', 'accept:text/plain; charset=utf8'])
 
     c = {
-      data: { '/': true, _csrf: '`token`' }
+      _: ['/'],
+      data: { _csrf: '`token`' }
       flags: { json: true }
       params: { accept: 'text/plain; charset=utf8' }
     }
@@ -41,30 +44,33 @@ describe 'wargs()', ->
     expect(a).toEqual c
 
   it 'can receive even almost anything (fallback)', ->
-    expect(wargs(NaN)).toEqual { data: {}, flags: {}, params: {} }
+    expect(wargs(NaN)).toEqual { _: [], data: {}, flags: {}, params: {} }
 
     expect(wargs({})).toEqual {
-      data: { '[object': true, 'Object]': true },
-      flags: {},
+      _: ['[object', 'Object]']
+      data: {}
+      flags: {}
       params: {}
     }
 
-    expect(wargs(-1)).toEqual { data: {}, flags: { 1: true }, params: {} }
-    expect(wargs(420)).toEqual { data: { 420: true }, flags: {}, params: {} }
-    expect(wargs(null)).toEqual  { data: {}, flags: {}, params: {} }
-    expect(wargs('00:00:00').data['00:00:00']).toBe true
+    expect(wargs(-1)).toEqual { _: [], data: {}, flags: { 1: true }, params: {} }
+    expect(wargs(420)).toEqual { _: ['420'], data: {}, flags: {}, params: {} }
+    expect(wargs(null)).toEqual  { _: [], data: {}, flags: {}, params: {} }
+    expect(wargs('00:00:00')._).toEqual ['00:00:00']
 
-    expect(wargs(undefined)).toEqual { data: {}, flags: {}, params: {} }
-    expect(wargs(Infinity)).toEqual { data: { Infinity: true }, flags: {}, params: {} }
+    expect(wargs(undefined)).toEqual { _: [], data: {}, flags: {}, params: {} }
+    expect(wargs(Infinity)).toEqual { _: ['Infinity'], data: {}, flags: {}, params: {} }
 
     expect(wargs(JSON.stringify(foo: 'bar'))).toEqual {
-      data: { '{"foo":"bar"}': true }
+      _: ['{"foo":"bar"}']
+      data: {}
       flags: {}
       params: {}
     }
 
     expect(wargs(JSON.stringify(['foo', 'bar']))).toEqual {
-      data: { '["foo","bar"]': true }
+      _: ['["foo","bar"]']
+      data: {}
       flags: {}
       params: {}
     }
@@ -115,40 +121,20 @@ describe 'wargs()', ->
     expect(wargs('key:foo\\ bar').params.key).toEqual 'foo bar'
 
   it 'supports everything else as data values (see spec)', ->
-    expect(wargs('x').data.x).toBe true
-    expect(wargs('x y').data.x).toBe true
-    expect(wargs('x y').data.y).toBe true
-    expect(wargs('x\\ y z').data['x y']).toBe true
-    expect(wargs('x\\ y z').data.z).toBe true
-    expect(wargs('\\ ').data[' ']).toBe true
-    expect(wargs('~"bar baz"').data['~bar baz']).toBe true
-    expect(wargs('foo"bar baz"').data['foobar baz']).toBe true
-    expect(wargs('foo "bar baz"').data.foo).toBe true
-    expect(wargs('foo "bar baz"').data['bar baz']).toBe true
-    expect(wargs(['~bar baz']).data['~bar baz']).toBe true
-    expect(wargs(['foobar baz']).data['foobar baz']).toBe true
-    expect(wargs(['foo', 'bar baz']).data.foo).toBe true
-    expect(wargs(['foo', 'bar baz']).data['bar baz']).toBe true
+    expect(wargs('x')._).toEqual ['x']
+    expect(wargs('x y')._).toEqual ['x', 'y']
+    expect(wargs('x\\ y z')._).toEqual ['x y', 'z']
+    expect(wargs('\\ ')._).toEqual [' ']
+    expect(wargs('~"bar baz"')._).toEqual ['~bar baz']
+    expect(wargs('foo"bar baz"')._).toEqual ['foobar baz']
+    expect(wargs('foo "bar baz"')._).toEqual ['foo', 'bar baz']
+    expect(wargs(['~bar baz'])._).toEqual ['~bar baz']
+    expect(wargs(['foobar baz'])._).toEqual ['foobar baz']
+    expect(wargs(['foo', 'bar baz'])._).toEqual ['foo', 'bar baz']
 
   it 'will use a custom formatting function' , ->
     expect(wargs('-x y', (s) -> s.toUpperCase()).flags.x).toEqual 'Y'
     expect(wargs('-x y', format: (s) -> s.toUpperCase()).flags.x).toEqual 'Y'
 
-  it 'will use a custom default for data values', ->
-    expect(wargs('a', asBool: 'yes').data.a).toEqual 'yes'
-
   it 'will set all keys as camelCase when enabled', ->
     expect(wargs('--foo-bar "baz buzz"', camelCase: true).flags).toEqual { fooBar: 'baz buzz' }
-
-  it 'will set data as an array of values when enabled', ->
-    expect(wargs('/ foo=bar --json', asArray: true)).toEqual {
-      data: ['/', 'foo']
-      flags: { json: true }
-      params: {}
-    }
-
-    expect(wargs('/ foo=bar --json')).toEqual {
-      data: { '/': true, foo: 'bar' }
-      flags: { json: true }
-      params: {}
-    }
