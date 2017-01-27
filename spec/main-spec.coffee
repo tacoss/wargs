@@ -14,6 +14,11 @@ describe 'wargs()', ->
     expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
     expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
 
+  it 'can receive nested quotes', ->
+    expect(wargs('''
+      -a '-b "c d"'
+    ''').flags.a).toEqual '-b "c d"'
+
   it 'can receive an array (argv-like)', ->
     expect(wargs([])).toEqual { data: {}, flags: {}, params: {} }
 
