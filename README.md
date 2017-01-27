@@ -19,38 +19,36 @@ Both values are representing the same input, the former can be taken from any so
 
 Most importantly: these modules will won't work with a string as input.
 
-**wargs** will do and return: `data`, `flags` and `params`.
+**wargs** will do and return: `_`, `data`, `flags` and `params`.
 
 ```js
 {
-  data: { '/': true, _csrf: '`token`' },
+  _: ['/'],
+  data: { _csrf: '`token`' },
   flags: { json: true },
   params: { accept: 'text/plain; charset=utf8' },
 }
 ```
 
-It suits _-and feels-_ very well on a repl for making http requests. ;-)
+Hint: It suits _-and feels-_ very well on a repl for making http requests. ;-)
 
 ## How it works
 
-**wargs** _understand_ regular flags, `-short` or `--long`, `key:value` and `key=value` params, and `everything` else will be _mapped or grouped_ as an array of values, e.g.
+**wargs** _understand_ regular flags, `-short` or `--long`, `key:value` and `key=value` params, and `everything` else will be collected as an array of values, e.g.
 
 ```js
 wargs('-x').flags.x; // true
 wargs('--x').flags.x; // true
 wargs('x:y').params.x; // y
 wargs('x=y').data; // { x: 'y' }
-wargs('x y').data; // { x true, y true }
-wargs('x', { asBool: 'yes' }).data; // { x: 'yes' }
-wargs('x y', { asArray: true }).data; // ['x', 'y']
+wargs('x y')._ // ['x', 'y']
+wargs('--x-y', { camelCase: true }).flags; // { xY: true }
 wargs('-x y', { format: v => v.toUpperCase() }).flags; // { x: 'Y' }
 ```
 
 ### Options
 
 - `format` &mdash; function decorator for all values
-- `asBool` &mdash; used as default value for single args
-- `asArray` &mdash; output data as an array of values instead
 - `camelCase` &mdash; normalize keys from `--camel-case` to `camelCase`
 
 ### Fun facts
