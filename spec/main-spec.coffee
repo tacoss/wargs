@@ -138,3 +138,9 @@ describe 'wargs()', ->
 
   it 'will set all keys as camelCase when enabled', ->
     expect(wargs('--foo-bar "baz buzz"', camelCase: true).flags).toEqual { fooBar: 'baz buzz' }
+
+  it 'will negate no-flag values by default', ->
+    expect(wargs('--no-foo').flags).toEqual { foo: false }
+
+  it 'will accept custom aliases', ->
+    expect(wargs('-x', aliases: { x: 'foo' }).flags).toEqual { foo: true }
