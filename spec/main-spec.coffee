@@ -82,6 +82,9 @@ describe 'wargs()', ->
     expect(wargs('-x -y').flags.y).toBe true
     expect(wargs('-x -y z').flags.y).toEqual 'z'
 
+  it 'supports single `-xy z` flags', ->
+    expect(wargs('-xy z').flags).toEqual { x: true, y: 'z' }
+
   it 'supports single `-x=y` flags', ->
     expect(wargs('-x=').flags.x).toEqual ''
     expect(wargs('-x=y').flags.x).toEqual 'y'
@@ -144,3 +147,4 @@ describe 'wargs()', ->
 
   it 'will accept custom aliases', ->
     expect(wargs('-x', aliases: { x: 'foo' }).flags).toEqual { foo: true }
+    expect(wargs('-abc d', aliases: { a: 'foo', b: 'bar' }).flags).toEqual { foo: true, bar: true, c: 'd' }
