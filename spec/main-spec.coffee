@@ -148,3 +148,4 @@ describe 'wargs()', ->
   it 'will accept custom aliases', ->
     expect(wargs('-x', aliases: { x: 'foo' }).flags).toEqual { foo: true }
     expect(wargs('-abc d', aliases: { a: 'foo', b: 'bar' }).flags).toEqual { foo: true, bar: true, c: 'd' }
+    expect(wargs('-fI', aliases: { f: 'force', I: 'no-install' }).flags).toEqual { force: true, install: false }
