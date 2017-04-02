@@ -164,3 +164,6 @@ describe 'wargs()', ->
     expect(wargs(['a', '--', 'b'])['--']).toEqual ['b']
     expect(wargs(['a', '--', 'b', 'c'])['--']).toEqual ['b', 'c']
     expect(wargs(['a', '--', 'b', 'c', '--', 'd'])['--']).toEqual ['b', 'c', '--', 'd']
+
+    expect(wargs('-x -- echo ok --a "b c"')['--']).toEqual ['echo', 'ok', '--a', 'b c']
+    expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c'])['--']).toEqual ['echo', 'ok', '--a', 'b c']
