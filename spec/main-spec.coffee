@@ -3,10 +3,10 @@ wargs = require('../lib')
 # wargs(str|arr, opts|cb, cb)
 describe 'wargs()', ->
   it 'can receive nothing', ->
-    expect(wargs()).toEqual { _: [], data: {}, flags: {}, params: {} }
+    expect(wargs()).toEqual { _: [], '--': [], data: {}, flags: {}, params: {} }
 
   it 'can receive a string', ->
-    expect(wargs('')).toEqual { _: [], data: {}, flags: {}, params: {} }
+    expect(wargs('')).toEqual { _: [], '--': [], data: {}, flags: {}, params: {} }
 
     argv = '-x y m "n o" i=j --foo "baz buzz" o:"p q" bazzinga -a=b --m=n p:q a="b c"'
 
@@ -21,7 +21,7 @@ describe 'wargs()', ->
     ''').flags.a).toEqual '-b "c d"'
 
   it 'can receive an array (argv-like)', ->
-    expect(wargs([])).toEqual { _: [], data: {}, flags: {}, params: {} }
+    expect(wargs([])).toEqual { _: [], '--': [], data: {}, flags: {}, params: {} }
 
     argv = ['-x', 'y', 'm', 'n o', 'i=j', '--foo', 'baz buzz', 'o:p q', 'bazzinga', '-a=b', '--m=n', 'p:q', 'a=b c']
 
@@ -34,7 +34,8 @@ describe 'wargs()', ->
     b = wargs(['/', '_csrf=`token`', '--json', 'accept:text/plain; charset=utf8'])
 
     c = {
-      _: ['/'],
+      _: ['/']
+      '--': []
       data: { _csrf: '`token`' }
       flags: { json: true }
       params: { accept: 'text/plain; charset=utf8' }
@@ -44,25 +45,27 @@ describe 'wargs()', ->
     expect(a).toEqual c
 
   it 'can receive even almost anything (fallback)', ->
-    expect(wargs(NaN)).toEqual { _: [], data: {}, flags: {}, params: {} }
+    expect(wargs(NaN)).toEqual { _: [], '--': [], data: {}, flags: {}, params: {} }
 
     expect(wargs({})).toEqual {
       _: ['[object', 'Object]']
+      '--': []
       data: {}
       flags: {}
       params: {}
     }
 
-    expect(wargs(-1)).toEqual { _: [], data: {}, flags: { 1: true }, params: {} }
-    expect(wargs(420)).toEqual { _: ['420'], data: {}, flags: {}, params: {} }
-    expect(wargs(null)).toEqual  { _: [], data: {}, flags: {}, params: {} }
+    expect(wargs(-1)).toEqual { _: [], '--': [], data: {}, flags: { 1: true }, params: {} }
+    expect(wargs(420)).toEqual { _: ['420'], '--': [], data: {}, flags: {}, params: {} }
+    expect(wargs(null)).toEqual  { _: [], '--': [], data: {}, flags: {}, params: {} }
     expect(wargs('00:00:00')._).toEqual ['00:00:00']
 
-    expect(wargs(undefined)).toEqual { _: [], data: {}, flags: {}, params: {} }
-    expect(wargs(Infinity)).toEqual { _: ['Infinity'], data: {}, flags: {}, params: {} }
+    expect(wargs(undefined)).toEqual { _: [], '--': [], data: {}, flags: {}, params: {} }
+    expect(wargs(Infinity)).toEqual { _: ['Infinity'], '--': [], data: {}, flags: {}, params: {} }
 
     expect(wargs(JSON.stringify(foo: 'bar'))).toEqual {
       _: ['{"foo":"bar"}']
+      '--': []
       data: {}
       flags: {}
       params: {}
@@ -70,6 +73,7 @@ describe 'wargs()', ->
 
     expect(wargs(JSON.stringify(['foo', 'bar']))).toEqual {
       _: ['["foo","bar"]']
+      '--': []
       data: {}
       flags: {}
       params: {}
@@ -149,3 +153,14 @@ describe 'wargs()', ->
     expect(wargs('-x', aliases: { x: 'foo' }).flags).toEqual { foo: true }
     expect(wargs('-abc d', aliases: { a: 'foo', b: 'bar' }).flags).toEqual { foo: true, bar: true, c: 'd' }
     expect(wargs('-fI', aliases: { f: 'force', I: 'no-install' }).flags).toEqual { force: true, install: false }
+
+  it 'will capture all arguments after --', ->
+    expect(wargs('-- b')['--']).toEqual ['b']
+    expect(wargs('a -- b')['--']).toEqual ['b']
+    expect(wargs('a -- b c')['--']).toEqual ['b', 'c']
+    expect(wargs('a -- b c -- d')['--']).toEqual ['b', 'c', '--', 'd']
+
+    expect(wargs(['--', 'b'])['--']).toEqual ['b']
+    expect(wargs(['a', '--', 'b'])['--']).toEqual ['b']
+    expect(wargs(['a', '--', 'b', 'c'])['--']).toEqual ['b', 'c']
+    expect(wargs(['a', '--', 'b', 'c', '--', 'd'])['--']).toEqual ['b', 'c', '--', 'd']
