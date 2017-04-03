@@ -155,15 +155,15 @@ describe 'wargs()', ->
     expect(wargs('-fI', aliases: { f: 'force', I: 'no-install' }).flags).toEqual { force: true, install: false }
 
   it 'will capture all arguments after --', ->
-    expect(wargs('-- b')['--']).toEqual ['b']
-    expect(wargs('a -- b')['--']).toEqual ['b']
-    expect(wargs('a -- b c')['--']).toEqual ['b', 'c']
-    expect(wargs('a -- b c -- d')['--']).toEqual ['b', 'c', '--', 'd']
+    expect(wargs('-- b').cmd).toEqual ['b']
+    expect(wargs('a -- b').cmd).toEqual ['b']
+    expect(wargs('a -- b c').cmd).toEqual ['b', 'c']
+    expect(wargs('a -- b c -- d').cmd).toEqual ['b', 'c', '--', 'd']
 
-    expect(wargs(['--', 'b'])['--']).toEqual ['b']
-    expect(wargs(['a', '--', 'b'])['--']).toEqual ['b']
-    expect(wargs(['a', '--', 'b', 'c'])['--']).toEqual ['b', 'c']
-    expect(wargs(['a', '--', 'b', 'c', '--', 'd'])['--']).toEqual ['b', 'c', '--', 'd']
+    expect(wargs(['--', 'b']).cmd).toEqual ['b']
+    expect(wargs(['a', '--', 'b']).cmd).toEqual ['b']
+    expect(wargs(['a', '--', 'b', 'c']).cmd).toEqual ['b', 'c']
+    expect(wargs(['a', '--', 'b', 'c', '--', 'd']).cmd).toEqual ['b', 'c', '--', 'd']
 
-    expect(wargs('-x -- echo ok --a "b c"')['--']).toEqual ['echo', 'ok', '--a', 'b c']
-    expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c'])['--']).toEqual ['echo', 'ok', '--a', 'b c']
+    expect(wargs('-x -- echo ok --a "b c"').cmd).toEqual ['echo', 'ok', '--a', 'b c']
+    expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c']).cmd).toEqual ['echo', 'ok', '--a', 'b c']
