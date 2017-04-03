@@ -30,8 +30,9 @@ describe 'wargs()', ->
     expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
     expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
 
+    # FIXME: improve the string-parsing impl
     a = wargs('/ _csrf=`token` --json accept:"text/plain; charset=utf8"')
-    b = wargs(['/', '_csrf=`token`', '--json', 'accept:text/plain; charset=utf8'])
+    b = wargs(['/', '_csrf=`token`', '--json', 'accept:text/plain; charset=utf8'], { booleans: ['json'] })
 
     c = {
       _: ['/']
@@ -167,3 +168,19 @@ describe 'wargs()', ->
 
     expect(wargs('-x -- echo ok --a "b c"').cmd).toEqual ['echo', 'ok', '--a', 'b c']
     expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c']).cmd).toEqual ['echo', 'ok', '--a', 'b c']
+
+  it 'will handle boolean flags', ->
+    expect(wargs('-x foo:bar').flags).toEqual { x: 'foo:bar' }
+    expect(wargs('-x foo:bar').params).toEqual {}
+    expect(wargs(['--long', 'foo:bar']).flags).toEqual { long: 'foo:bar' }
+    expect(wargs(['--long', 'foo:bar']).params).toEqual {}
+
+    expect(wargs('-x foo:bar', { booleans: ['x'] }).flags).toEqual { x: true }
+    expect(wargs('-x foo:bar', { booleans: ['x'] }).params).toEqual { foo: 'bar' }
+    expect(wargs(['--long', 'foo:bar'], { booleans: ['long'] }).flags).toEqual { long: true }
+    expect(wargs(['--long', 'foo:bar'], { booleans: ['long'] }).params).toEqual { foo: 'bar' }
+
+    expect(wargs('-abc d:e').flags).toEqual { a: true, b: true, c: 'd:e' }
+    expect(wargs('-abc d:e').params).toEqual {}
+    expect(wargs(['-abc', 'd:e'], { booleans: ['c'] }).flags).toEqual { a: true, b: true, c: true }
+    expect(wargs(['-abc', 'd:e'], { booleans: ['c'] }).params).toEqual { d: 'e' }
