@@ -30,8 +30,7 @@ describe 'wargs()', ->
     expect(wargs(argv).flags).toEqual { x: 'y', foo: 'baz buzz', a: 'b', m: 'n' }
     expect(wargs(argv).params).toEqual { o: 'p q', p: 'q' }
 
-    # FIXME: improve the string-parsing impl
-    a = wargs('/ _csrf=`token` --json accept:"text/plain; charset=utf8"')
+    a = wargs('/ _csrf=`token` --json accept:"text/plain; charset=utf8"', { booleans: ['json'] })
     b = wargs(['/', '_csrf=`token`', '--json', 'accept:text/plain; charset=utf8'], { booleans: ['json'] })
 
     c = {
@@ -64,8 +63,9 @@ describe 'wargs()', ->
     expect(wargs(undefined)).toEqual { _: [], cmd: [], data: {}, flags: {}, params: {} }
     expect(wargs(Infinity)).toEqual { _: ['Infinity'], cmd: [], data: {}, flags: {}, params: {} }
 
+    # FIXME: keep JSON values as-is?
     expect(wargs(JSON.stringify(foo: 'bar'))).toEqual {
-      _: ['{"foo":"bar"}']
+      _: ['{foo:bar}']
       cmd: []
       data: {}
       flags: {}
@@ -73,7 +73,7 @@ describe 'wargs()', ->
     }
 
     expect(wargs(JSON.stringify(['foo', 'bar']))).toEqual {
-      _: ['["foo","bar"]']
+      _: ['[foo,bar]']
       cmd: []
       data: {}
       flags: {}
