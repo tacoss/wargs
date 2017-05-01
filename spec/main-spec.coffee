@@ -3,10 +3,10 @@ wargs = require('../lib')
 # wargs(str|arr, opts|cb, cb)
 describe 'wargs()', ->
   it 'can receive nothing', ->
-    expect(wargs()).toEqual { _: [], cmd: [], data: {}, flags: {}, params: {} }
+    expect(wargs()).toEqual { _: [], raw: [], data: {}, flags: {}, params: {} }
 
   it 'can receive a string', ->
-    expect(wargs('')).toEqual { _: [], cmd: [], data: {}, flags: {}, params: {} }
+    expect(wargs('')).toEqual { _: [], raw: [], data: {}, flags: {}, params: {} }
 
     argv = '-x y m "n o" i=j --foo "baz buzz" o:"p q" bazzinga -a=b --m=n p:q a="b c"'
 
@@ -21,7 +21,7 @@ describe 'wargs()', ->
     ''').flags.a).toEqual '-b "c d"'
 
   it 'can receive an array (argv-like)', ->
-    expect(wargs([])).toEqual { _: [], cmd: [], data: {}, flags: {}, params: {} }
+    expect(wargs([])).toEqual { _: [], raw: [], data: {}, flags: {}, params: {} }
 
     argv = ['-x', 'y', 'm', 'n o', 'i=j', '--foo', 'baz buzz', 'o:p q', 'bazzinga', '-a=b', '--m=n', 'p:q', 'a=b c']
 
@@ -35,7 +35,7 @@ describe 'wargs()', ->
 
     c = {
       _: ['/']
-      cmd: []
+      raw: []
       data: { _csrf: '`token`' }
       flags: { json: true }
       params: { accept: 'text/plain; charset=utf8' }
@@ -45,28 +45,28 @@ describe 'wargs()', ->
     expect(a).toEqual c
 
   it 'can receive even almost anything (fallback)', ->
-    expect(wargs(NaN)).toEqual { _: [], cmd: [], data: {}, flags: {}, params: {} }
+    expect(wargs(NaN)).toEqual { _: [], raw: [], data: {}, flags: {}, params: {} }
 
     expect(wargs({})).toEqual {
       _: ['[object', 'Object]']
-      cmd: []
+      raw: []
       data: {}
       flags: {}
       params: {}
     }
 
-    expect(wargs(-1)).toEqual { _: [], cmd: [], data: {}, flags: { 1: true }, params: {} }
-    expect(wargs(420)).toEqual { _: ['420'], cmd: [], data: {}, flags: {}, params: {} }
-    expect(wargs(null)).toEqual  { _: [], cmd: [], data: {}, flags: {}, params: {} }
+    expect(wargs(-1)).toEqual { _: [], raw: [], data: {}, flags: { 1: true }, params: {} }
+    expect(wargs(420)).toEqual { _: ['420'], raw: [], data: {}, flags: {}, params: {} }
+    expect(wargs(null)).toEqual  { _: [], raw: [], data: {}, flags: {}, params: {} }
     expect(wargs('00:00:00')._).toEqual ['00:00:00']
 
-    expect(wargs(undefined)).toEqual { _: [], cmd: [], data: {}, flags: {}, params: {} }
-    expect(wargs(Infinity)).toEqual { _: ['Infinity'], cmd: [], data: {}, flags: {}, params: {} }
+    expect(wargs(undefined)).toEqual { _: [], raw: [], data: {}, flags: {}, params: {} }
+    expect(wargs(Infinity)).toEqual { _: ['Infinity'], raw: [], data: {}, flags: {}, params: {} }
 
     # FIXME: keep JSON values as-is?
     expect(wargs(JSON.stringify(foo: 'bar'))).toEqual {
       _: ['{foo:bar}']
-      cmd: []
+      raw: []
       data: {}
       flags: {}
       params: {}
@@ -74,7 +74,7 @@ describe 'wargs()', ->
 
     expect(wargs(JSON.stringify(['foo', 'bar']))).toEqual {
       _: ['[foo,bar]']
-      cmd: []
+      raw: []
       data: {}
       flags: {}
       params: {}
@@ -156,18 +156,18 @@ describe 'wargs()', ->
     expect(wargs('-fI', aliases: { f: 'force', I: 'no-install' }).flags).toEqual { force: true, install: false }
 
   it 'will capture all arguments after --', ->
-    expect(wargs('-- b').cmd).toEqual ['b']
-    expect(wargs('a -- b').cmd).toEqual ['b']
-    expect(wargs('a -- b c').cmd).toEqual ['b', 'c']
-    expect(wargs('a -- b c -- d').cmd).toEqual ['b', 'c', '--', 'd']
+    expect(wargs('-- b').raw).toEqual ['b']
+    expect(wargs('a -- b').raw).toEqual ['b']
+    expect(wargs('a -- b c').raw).toEqual ['b', 'c']
+    expect(wargs('a -- b c -- d').raw).toEqual ['b', 'c', '--', 'd']
 
-    expect(wargs(['--', 'b']).cmd).toEqual ['b']
-    expect(wargs(['a', '--', 'b']).cmd).toEqual ['b']
-    expect(wargs(['a', '--', 'b', 'c']).cmd).toEqual ['b', 'c']
-    expect(wargs(['a', '--', 'b', 'c', '--', 'd']).cmd).toEqual ['b', 'c', '--', 'd']
+    expect(wargs(['--', 'b']).raw).toEqual ['b']
+    expect(wargs(['a', '--', 'b']).raw).toEqual ['b']
+    expect(wargs(['a', '--', 'b', 'c']).raw).toEqual ['b', 'c']
+    expect(wargs(['a', '--', 'b', 'c', '--', 'd']).raw).toEqual ['b', 'c', '--', 'd']
 
-    expect(wargs('-x -- echo ok --a "b c"').cmd).toEqual ['echo', 'ok', '--a', 'b c']
-    expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c']).cmd).toEqual ['echo', 'ok', '--a', 'b c']
+    expect(wargs('-x -- echo ok --a "b c"').raw).toEqual ['echo', 'ok', '--a', 'b c']
+    expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c']).raw).toEqual ['echo', 'ok', '--a', 'b c']
 
   it 'will handle boolean flags', ->
     expect(wargs('-x foo:bar').flags).toEqual { x: 'foo:bar' }
