@@ -83,12 +83,14 @@ describe 'wargs()', ->
   it 'supports single `-x` flags', ->
     expect(wargs('-x').flags.x).toBe true
     expect(wargs('-x y').flags.x).toEqual 'y'
+
     expect(wargs('-x -y').flags.x).toBe true
     expect(wargs('-x -y').flags.y).toBe true
+
     expect(wargs('-x -y z').flags.y).toEqual 'z'
 
   it 'supports single `-xy z` flags', ->
-    expect(wargs('-xy z').flags).toEqual { x: true, y: 'z' }
+    expect(wargs('-xy z', { booleans: 'x' }).flags).toEqual { x: true, y: 'z' }
 
   it 'supports single `-x=y` flags', ->
     expect(wargs('-x=').flags.x).toEqual ''
@@ -100,8 +102,10 @@ describe 'wargs()', ->
   it 'supports double `--x` flags', ->
     expect(wargs('--x').flags.x).toBe true
     expect(wargs('--x y').flags.x).toEqual 'y'
+
     expect(wargs('--x --y').flags.x).toBe true
     expect(wargs('--x --y').flags.y).toBe true
+
     expect(wargs('--x --y z').flags.y).toEqual 'z'
 
   it 'supports quoted `--y "foo bar"` flags', ->
@@ -152,8 +156,8 @@ describe 'wargs()', ->
 
   it 'will accept custom aliases', ->
     expect(wargs('-x', aliases: { x: 'foo' }).flags).toEqual { foo: true }
-    expect(wargs('-abc d', aliases: { a: 'foo', b: 'bar' }).flags).toEqual { foo: true, bar: true, c: 'd' }
-    expect(wargs('-fI', aliases: { f: 'force', I: 'no-install' }).flags).toEqual { force: true, install: false }
+    expect(wargs('-abc d', aliases: { a: 'foo', b: 'bar' }, booleans: 'ab').flags).toEqual { foo: true, bar: true, c: 'd' }
+    expect(wargs('-fI', aliases: { f: 'force', I: 'no-install' }, booleans: 'f').flags).toEqual { force: true, install: false }
 
   it 'will capture all arguments after --', ->
     expect(wargs('-- b').raw).toEqual ['b']
@@ -171,16 +175,23 @@ describe 'wargs()', ->
 
   it 'will handle boolean flags', ->
     expect(wargs('-x foo:bar').flags).toEqual { x: 'foo:bar' }
-    expect(wargs('-x foo:bar').params).toEqual {}
     expect(wargs(['--long', 'foo:bar']).flags).toEqual { long: 'foo:bar' }
-    expect(wargs(['--long', 'foo:bar']).params).toEqual {}
 
     expect(wargs('-x foo:bar', { booleans: ['x'] }).flags).toEqual { x: true }
     expect(wargs('-x foo:bar', { booleans: ['x'] }).params).toEqual { foo: 'bar' }
+
     expect(wargs(['--long', 'foo:bar'], { booleans: ['long'] }).flags).toEqual { long: true }
     expect(wargs(['--long', 'foo:bar'], { booleans: ['long'] }).params).toEqual { foo: 'bar' }
 
-    expect(wargs('-abc d:e').flags).toEqual { a: true, b: true, c: 'd:e' }
-    expect(wargs('-abc d:e').params).toEqual {}
-    expect(wargs(['-abc', 'd:e'], { booleans: ['c'] }).flags).toEqual { a: true, b: true, c: true }
-    expect(wargs(['-abc', 'd:e'], { booleans: ['c'] }).params).toEqual { d: 'e' }
+    expect(wargs('-abc d:e', { booleans: 'ab' }).flags).toEqual { a: true, b: true, c: 'd:e' }
+    expect(wargs(['-abc', 'd:e'], { booleans: 'abc' }).flags).toEqual { a: true, b: true, c: true }
+    expect(wargs(['-abc', 'd:e'], { booleans: 'abc' }).params).toEqual { d: 'e' }
+
+  it 'will short-circuit boolean flags', ->
+    a = wargs('-x BAZ=buzz', { booleans: 'x', aliases: { x: 'large' } })
+    b = wargs('--large BAZ=buzz', { booleans: 'x', aliases: { x: 'large' } })
+
+    expect(a.flags.large).toBe true
+    expect(a.data.BAZ).toEqual 'buzz'
+
+    expect(a).toEqual b
