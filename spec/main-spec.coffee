@@ -195,3 +195,6 @@ describe 'wargs()', ->
     expect(a.data.BAZ).toEqual 'buzz'
 
     expect(a).toEqual b
+
+  it 'will allow consecutive array flags', ->
+    expect(wargs('-a 1 -a 2 -a 3', arrays: 'a').flags.a).toEqual ['1', '2', '3']
