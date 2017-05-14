@@ -174,6 +174,9 @@ describe 'wargs()', ->
     expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c']).raw).toEqual ['echo', 'ok', '--a', 'b c']
 
   it 'will handle boolean flags', ->
+    expect(-> wargs('-ab')).toThrow()
+    expect(-> wargs('-a=b', booleans: 'a')).toThrow()
+
     expect(wargs('-x foo:bar').flags).toEqual { x: 'foo:bar' }
     expect(wargs(['--long', 'foo:bar']).flags).toEqual { long: 'foo:bar' }
 
