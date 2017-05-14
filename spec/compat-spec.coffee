@@ -14,27 +14,29 @@ describe 'integration', ->
         run: => @w = wargs(argv)
       }
       {
-        name: 'yargs-parser'
-        run: => @y = yargs(argv)
-      }
-      {
         name: 'minimist'
         run: => @m = minimist(argv)
+      }
+      {
+        name: 'yargs-parser'
+        run: => @y = yargs(argv)
       }
     ]
 
     @stats = for fn in tests
-      start = new Date()
-      times = MAX_TIMES
-      while times--
-        fn.run()
-      { id: fn.name, ms: ((new Date()) - start) / 1000 }
+      do ->
+        start = new Date()
+        times = MAX_TIMES
+        while times--
+          fn.run()
+        { id: fn.name, ms: ((new Date()) - start) / 1000 }
 
   afterEach ->
     console.log """
 
       Average stats x#{MAX_TIMES}:
         #{@stats.map((x) -> "#{x.id}  #{x.ms}ms").join('\n  ')}
+
     """
 
   it 'consume flags correctly', ->
@@ -43,7 +45,7 @@ describe 'integration', ->
       expect(@w.flags[key]).toEqual @m[key]
 
   it 'consume values correctly', ->
-    _ = @w._.concat(@w.raw.slice())
+    _ = (@w._ || []).concat((@w.raw || []).slice())
     _.push("#{k}=#{v}") for k, v of @w.data
     _.push("#{k}:#{v}") for k, v of @w.params
 
