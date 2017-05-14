@@ -23,31 +23,31 @@ describe 'integration', ->
       }
     ]
 
-    @stats = for fn in tests
+    stats = for fn in tests
       do ->
         start = new Date()
         times = MAX_TIMES
-        while times--
-          fn.run()
+        fn.run() while times--
         { id: fn.name, ms: ((new Date()) - start) / 1000 }
 
-  afterEach ->
     console.log """
 
       Average stats x#{MAX_TIMES}:
-        #{@stats.map((x) -> "#{x.id}  #{x.ms}ms").join('\n  ')}
+        #{(stats || []).map((x) -> "#{x.id}  ~#{x.ms}ms").join('\n  ')}
 
     """
 
   it 'consume flags correctly', ->
-    for key, value of @w.flags
-      expect(@w.flags[key]).toEqual @y[key]
-      expect(@w.flags[key]).toEqual @m[key]
+    if @w
+      for key, value of @w.flags
+        expect(@w.flags[key]).toEqual @y[key]
+        expect(@w.flags[key]).toEqual @m[key]
 
   it 'consume values correctly', ->
-    _ = (@w._ || []).concat((@w.raw || []).slice())
-    _.push("#{k}=#{v}") for k, v of @w.data
-    _.push("#{k}:#{v}") for k, v of @w.params
+    if @w
+      _ = @w._.concat(@w.raw.slice())
+      _.push("#{k}=#{v}") for k, v of @w.data
+      _.push("#{k}:#{v}") for k, v of @w.params
 
-    expect(_.sort()).toEqual @y._.sort()
-    expect(_.sort()).toEqual @m._.sort()
+      expect(_.sort()).toEqual @y._.sort()
+      expect(_.sort()).toEqual @m._.sort()
