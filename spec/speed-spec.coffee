@@ -32,6 +32,7 @@ describe 'integration', ->
 
   afterEach ->
     console.log """
+
       Average stats x#{MAX_TIMES}:
         #{@stats.map((x) -> "#{x.id}  #{x.ms}ms").join('\n  ')}
     """
