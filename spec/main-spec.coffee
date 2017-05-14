@@ -198,3 +198,4 @@ describe 'wargs()', ->
 
   it 'will allow consecutive array flags', ->
     expect(wargs('-a 1 -a 2 -a 3', arrays: 'a').flags.a).toEqual ['1', '2', '3']
+    expect(wargs('-S "{x,y,z}/**" -S _', arrays: 'S', aliases: { S: 'sources' }).flags.sources).toEqual ['{x,y,z}/**', '_']
