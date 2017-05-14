@@ -2,7 +2,7 @@ wargs = require('..')
 yargs = require('yargs-parser')
 minimist = require('minimist')
 
-MAX_TIMES = if process.env.CI then 1000000 else 1000
+MAX_TIMES = if process.env.CI then 10000 else 1000
 
 argv = ['-x', 'y', 'm', 'n o', 'i=j', '--foo', 'baz buzz', 'o:p q', 'bazzinga', '-a=b', '--m=n', 'p:q', 'a=b c', '--', '...']
 
