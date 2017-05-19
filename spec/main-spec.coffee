@@ -174,8 +174,9 @@ describe 'wargs()', ->
     expect(wargs(['-x', '--', 'echo', 'ok', '--a', 'b c']).raw).toEqual ['echo', 'ok', '--a', 'b c']
 
   it 'will handle boolean flags', ->
-    expect(-> wargs('-ab')).toThrow()
+    expect(-> wargs('-ab')).not.toThrow()
     expect(-> wargs('-a=b', booleans: 'a')).toThrow()
+    expect(-> wargs('-a b', booleans: 'a')).toThrow()
 
     expect(wargs('-x foo:bar').flags).toEqual { x: 'foo:bar' }
     expect(wargs(['--long', 'foo:bar']).flags).toEqual { long: 'foo:bar' }
@@ -202,3 +203,11 @@ describe 'wargs()', ->
   it 'will allow consecutive array flags', ->
     expect(wargs('-a 1 -a 2 -a 3', arrays: 'a').flags.a).toEqual ['1', '2', '3']
     expect(wargs('-S "{x,y,z}/**" -S _', arrays: 'S', aliases: { S: 'sources' }).flags.sources).toEqual ['{x,y,z}/**', '_']
+
+  it 'will handle shortands without no- prefixes', ->
+    a = wargs('-aBc', { aliases: { B: 'no-baz', c: 'buzz' }, booleans: 'aBc' })
+    b = wargs('-acB', { aliases: { B: 'no-baz', c: 'buzz' }, booleans: 'aBc' })
+
+    expect(a).toEqual b
+
+    expect(-> wargs('-acB y', { aliases: { B: 'no-baz', c: 'buzz' }, booleans: 'aBc' })).toThrow()
