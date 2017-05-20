@@ -1,6 +1,6 @@
 {
   "name": "wargs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "lib/index.js",
   "description": "Wrong args parser",
   "author": "Alvaro Cabrera <pateketrueke@gmail.com>",
