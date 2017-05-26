@@ -195,6 +195,9 @@ describe 'wargs()', ->
     a = wargs('-x BAZ=buzz', { booleans: 'x', aliases: { x: 'large' } })
     b = wargs('--large BAZ=buzz', { booleans: 'x', aliases: { x: 'large' } })
 
+    expect(wargs('-=')._).toEqual ['-=']
+    expect(wargs('--=')._).toEqual ['--=']
+
     expect(a.flags.large).toBe true
     expect(a.data.BAZ).toEqual 'buzz'
 
