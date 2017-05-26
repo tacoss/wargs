@@ -203,8 +203,33 @@ describe 'wargs()', ->
   it 'will allow consecutive array flags', ->
     expect(wargs('-a 1 -a 2 -a 3', arrays: 'a').flags.a).toEqual ['1', '2', '3']
     expect(wargs('-a 0 -a 0 -a 0 -a 0', arrays: 'a').flags.a).toEqual ['0', '0', '0', '0']
+
     expect(wargs('-a b=c -a d=e', arrays: 'a', aliases: { a: 'add' }).flags.add).toEqual ['b=c', 'd=e']
     expect(wargs('-S "{x,y,z}/**" -S _', arrays: 'S', aliases: { S: 'sources' }).flags.sources).toEqual ['{x,y,z}/**', '_']
+
+    opts = {
+      booleans: 'crudjtm'
+      arrays: 'a'
+      aliases: {
+        c: 'post'
+        r: 'get'
+        u: 'put'
+        d: 'delete'
+        j: 'json'
+        t: 'text'
+        a: 'attach'
+        m: 'multipart'
+      }
+    }
+
+    expect(wargs('/x -m -a b=c -a d=e', opts)).toEqual
+      _: ['/x']
+      raw: []
+      data: {}
+      params: {}
+      flags:
+        multipart: true
+        attach: ['b=c', 'd=e']
 
   it 'will handle shortands without no- prefixes', ->
     a = wargs('-aBc', { aliases: { B: 'no-baz', c: 'buzz' }, booleans: 'aBc' })
