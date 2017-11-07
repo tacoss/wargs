@@ -12,16 +12,16 @@
     "cover": "istanbul cover --root lib --x '**/spec/**' -- jasmine-node --coffee spec",
     "cover:up": "codecov --file=coverage/lcov.info --disable=gcov -e TRAVIS_NODE_VERSION",
     "example": "node examples/_runner.js",
-    "test": "yarn lint && yarn cover"
+    "test": "npm run lint && npm run cover"
   },
   "devDependencies": {
-    "codecov": "^1.0.1",
-    "eslint": "^3.5.0",
-    "eslint-config-airbnb-base": "^5.0.3",
-    "eslint-plugin-import": "^1.14.0",
+    "codecov": "^3.0.0",
+    "eslint": "^4.10.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
     "istanbul": "^0.4.3",
     "jasmine-node": "2.0.0-beta4",
     "minimist": "^1.2.0",
-    "yargs-parser": "^7.0.0"
+    "yargs-parser": "^8.0.0"
   }
 }
