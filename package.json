@@ -1,6 +1,6 @@
 {
   "name": "wargs",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "main": "lib/index.js",
   "description": "Wrong args parser",
   "author": "Alvaro Cabrera <pateketrueke@gmail.com>",
@@ -23,5 +23,8 @@
     "jasmine-node": "2.0.0-beta4",
     "minimist": "^1.2.0",
     "yargs-parser": "^8.0.0"
+  },
+  "dependencies": {
+    "getopts": "^2.0.0"
   }
 }

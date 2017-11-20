@@ -35,7 +35,9 @@ Hint: It suits _-and feels-_ very well on a repl for making http requests. ;-)
 
 ## How it works
 
-**wargs** _understand_ regular flags, `-short` or `--long`, `[-|--]key:value` and `[-|--]key=value` params, and `everything` else will be collected as an array of values, e.g.
+**wargs** use [getopts](https://github.com/JorgeBucaran/getopts) to _understand_ regular flags, `-short` or `--long`, etc.
+
+Also it will collect `key:value` and `key=value` values as `params` and `data` respectively.
 
 ```js
 wargs('-x').flags.x; // true
@@ -50,11 +52,8 @@ wargs('-x y', { format: v => v.toUpperCase() }).flags; // { x: 'Y' }
 ### Options
 
 - `format` &mdash; function decorator for all values
-- `arrays` &mdash; allow multiple values per single flag
-- `booleans` &mdash; allow/disable values for single booleans
-- `defaults` &mdash; apply default values for non-given flags
-- `transform` &mdash; custom callback for token processing
 - `camelCase` &mdash; normalize keys from `--camel-case` to `camelCase`
+- `alias`, `boolean`, `default` and `unknown` &mdash; those are given as is to [getopts](https://github.com/JorgeBucaran/getopts)
 
 ### Fun facts
 

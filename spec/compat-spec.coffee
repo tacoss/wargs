@@ -1,6 +1,7 @@
 wargs = require('..')
 yargs = require('yargs-parser')
 minimist = require('minimist')
+getopts = require('getopts')
 
 MAX_TIMES = if process.env.CI then 10000 else 1000
 
@@ -20,6 +21,10 @@ describe 'integration', ->
       {
         name: 'yargs-parser'
         run: => @y = yargs(argv)
+      }
+      {
+        name: 'getopts'
+        run: => @g = getopts(argv)
       }
     ]
 
