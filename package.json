@@ -22,7 +22,7 @@
     "istanbul": "^0.4.3",
     "jasmine-node": "2.0.0-beta4",
     "minimist": "^1.2.0",
-    "yargs-parser": "^8.0.0"
+    "yargs-parser": "^9.0.2"
   },
   "dependencies": {
     "getopts": "^2.0.0"
