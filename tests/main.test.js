@@ -406,8 +406,8 @@ describe('wargs()', () => {
   });
 
   it('will allow consecutive array flags', () => {
-    expect(wargs('-a 1 -a 2 -a 3').flags.a).to.eql(['1', '2', '3']);
-    expect(wargs('-a 0 -a 0 -a 0 -a 0').flags.a).to.eql(['0', '0', '0', '0']);
+    expect(wargs('-a 1 -a 2 -a 3').flags.a.map(String)).to.eql(['1', '2', '3']);
+    expect(wargs('-a 0 -a 0 -a 0 -a 0').flags.a.map(String)).to.eql(['0', '0', '0', '0']);
     expect(wargs('-a b=c -a d=e', {
       alias: {
         a: 'add',
