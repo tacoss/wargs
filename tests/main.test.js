@@ -420,7 +420,7 @@ describe('wargs()', () => {
     }).flags.sources).to.eql(['{x,y,z}/**', '_']);
 
     const opts = {
-      boolean: 'crudjtm'.split(''),
+      boolean: 'crudjtm',
       alias: {
         c: 'post',
         r: 'get',
