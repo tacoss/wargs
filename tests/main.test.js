@@ -433,18 +433,13 @@ describe('wargs()', () => {
       },
     };
 
-    expect(wargs('/x -m -a b=c -a d=e', opts)).to.eql({
-      _: ['/x'],
-      raw: [],
-      data: {},
-      params: {},
-      flags: {
-        m: true,
-        multipart: true,
-        a: ['b=c', 'd=e'],
-        attach: ['b=c', 'd=e'],
-      },
-    });
+    const test = wargs('/x -m -a b=c -a d=e', opts);
+
+    expect(test.flags.m).to.eql(true);
+    expect(test.flags.m).to.eql(test.flags.multipart);
+
+    expect(test.flags.a).to.eql(['b=c', 'd=e']);
+    expect(test.flags.a).to.eql(test.flags.attach);
   });
 
   it('will handle shortands without no- prefixes', () => {
