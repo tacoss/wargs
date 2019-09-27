@@ -6,7 +6,12 @@
   "unpkg": "dist/wargs.min.js",
   "browser": "dist/wargs.min.js",
   "description": "Wrong args parser",
-  "author": "Alvaro Cabrera <pateketrueke@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tacoss/wargs"
+  },
+  "bugs": "https://github.com/tacoss/wargs/issues",
+  "author": "Alvaro Cabrera <pateketrueke@gmail.com> (https://soypache.co)",
   "license": "MIT",
   "scripts": {
     "dev": "npm test -- -w",

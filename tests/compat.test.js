@@ -68,7 +68,7 @@ describe('integration', () => {
     })();
 
     /* eslint-disable */
-    console.log("\nAverage stats x" + MAX_TIMES + ":\n  " + ((stats || []).map(x => {
+    console.log("\nAverage stats x" + MAX_TIMES + ":\n  " + stats.map(x => {
       return x.id + "  ~" + x.ms + "ms";
     }).join('\n  ')) + "\n");
     /* eslint-enable */

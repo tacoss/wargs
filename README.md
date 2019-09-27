@@ -2,9 +2,9 @@
 
 > tl-dr; I didn't wrote a parser.
 
-[![Build Status](https://travis-ci.org/pateketrueke/wargs.png)](https://travis-ci.org/pateketrueke/wargs)
+[![Build Status](https://travis-ci.org/tacoss/wargs.png)](https://travis-ci.org/tacoss/wargs)
 [![NPM version](https://badge.fury.io/js/wargs.png)](http://badge.fury.io/js/wargs)
-[![Coverage Status](https://codecov.io/github/pateketrueke/wargs/coverage.svg)](https://codecov.io/github/pateketrueke/wargs)
+[![Coverage Status](https://codecov.io/github/tacoss/wargs/coverage.svg)](https://codecov.io/github/tacoss/wargs)
 
 Instead, I used regular expressions for extracting values, flags and other kind of parameters from a string or from an argv-like array.
 

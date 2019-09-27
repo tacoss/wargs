@@ -2,7 +2,6 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
 
-const isDev = process.env.ROLLUP_WATCH;
 const isProd = process.env.NODE_ENV === 'production';
 
 function bundle(file, format) {
