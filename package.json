@@ -1,7 +1,10 @@
 {
   "name": "wargs",
   "version": "0.8.2",
-  "main": "lib/index.js",
+  "main": "dist/wargs.js",
+  "module": "dist/wargs.es.js",
+  "unpkg": "dist/wargs.min.js",
+  "browser": "dist/wargs.min.js",
   "description": "Wrong args parser",
   "author": "Alvaro Cabrera <pateketrueke@gmail.com>",
   "license": "MIT",
@@ -18,18 +21,24 @@
     "coverage:unit": "npm run coverage -- npm run test:unit",
     "codecov": "codecov --file=coverage/lcov.info -e TRAVIS_NODE_VERSION",
     "report": "nyc report",
+    "build": "NODE_ENV=production rollup -c",
+    "prepublish": "npm run build",
     "pretest": "npm run lint"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "codecov": "^3.1.0",
-    "eslint": "^5.9.0",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint": "^6.4.0",
+    "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.14.0",
     "minimist": "^1.2.0",
-    "mocha": "^5.2.0",
-    "nyc": "^13.1.0",
-    "yargs-parser": "^11.1.1"
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "rollup": "^1.21.4",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.2",
+    "yargs-parser": "^14.0.0"
   },
   "dependencies": {
     "getopts": "^2.0.0"
