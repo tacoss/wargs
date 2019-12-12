@@ -1,6 +1,6 @@
 {
   "name": "wargs",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "main": "dist/wargs.js",
   "module": "dist/wargs.es.js",
   "unpkg": "dist/wargs.min.js",
