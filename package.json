@@ -13,6 +13,9 @@
   "bugs": "https://github.com/tacoss/wargs/issues",
   "author": "Alvaro Cabrera <pateketrueke@gmail.com> (https://soypache.co)",
   "license": "MIT",
+  "files": [
+    "dist/*.js"
+  ],
   "scripts": {
     "dev": "npm test -- -w",
     "lint": "eslint lib tests",
