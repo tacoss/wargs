@@ -442,6 +442,13 @@ describe('wargs()', () => {
     expect(test.flags.a).to.eql(test.flags.attach);
   });
 
+  it('should handle long-flags for string values', () => {
+    expect(wargs('--foo-x value --bar-y', {
+      string: ['foo-x'],
+      boolean: ['bar-y'],
+    }).flags).to.eql({ fooX: 'value', barY: true });
+  });
+
   it('will handle shortands without no- prefixes', () => {
     const a = wargs('-aBc', {
       alias: {
