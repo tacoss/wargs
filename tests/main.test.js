@@ -249,6 +249,10 @@ describe('wargs()', () => {
     expect(wargs(['foo', 'bar baz'])._).to.eql(['foo', 'bar baz']);
   });
 
+  it('should handle multiple params as an array', () => {
+    expect(wargs('a:b a:c a:').params).to.eql({ a: ['b', 'c', ''] });
+  });
+
   it('will use a custom formatting function', () => {
     expect(wargs('-x y', s => s.toUpperCase()).flags.x).to.eql('Y');
     expect(wargs('-x y', {
