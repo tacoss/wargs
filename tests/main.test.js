@@ -442,11 +442,18 @@ describe('wargs()', () => {
     expect(test.flags.a).to.eql(test.flags.attach);
   });
 
-  it('should handle long-flags for string values', () => {
+  it('should handle long-flags as camelCase flags', () => {
     expect(wargs('--foo-x value --bar-y', {
       string: ['foo-x'],
       boolean: ['bar-y'],
     }).flags).to.eql({ fooX: 'value', barY: true });
+  });
+
+  it('should convert string/boolean options', () => {
+    expect(wargs('-abc -d', {
+      string: 'b',
+      boolean: 'ad',
+    }).flags).to.eql({ a: true, b: 'c', d: true });
   });
 
   it('will handle shortands without no- prefixes', () => {
