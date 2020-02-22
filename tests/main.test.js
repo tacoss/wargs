@@ -307,8 +307,22 @@ describe('wargs()', () => {
     }).flags).to.eql({
       f: true,
       force: true,
-      I: false,
+      I: true,
       install: false,
+    });
+  });
+
+  it('should keep negative flags on aliasing', () => {
+    expect(wargs('--no-foo', {
+      alias: {
+        F: 'no-foo',
+        f: 'foo',
+      },
+      boolean: ['F', 'f'],
+    }).flags).to.eql({
+      foo: false,
+      F: true,
+      f: false,
     });
   });
 
@@ -492,7 +506,7 @@ describe('wargs()', () => {
         a: true,
         c: true,
         buzz: true,
-        B: false,
+        B: true,
         baz: false,
       },
       params: {},
