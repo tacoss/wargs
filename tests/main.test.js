@@ -232,6 +232,11 @@ describe('wargs()', () => {
     expect(wargs('x:y').params.x).to.eql('y');
   });
 
+  it('supports slashes on keys for params', () => {
+    expect(wargs('./a=/a').data['./a']).to.eql('/a');
+    expect(wargs('./a:/a').params['./a']).to.eql('/a');
+  });
+
   it('supports escaped `key:foo\\ bar` params', () => {
     expect(wargs('key:foo\\ bar').params.key).to.eql('foo bar');
   });
