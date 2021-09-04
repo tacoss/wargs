@@ -215,7 +215,6 @@ describe('wargs()', () => {
   });
 
   it('supports single `--key=value` flags', () => {
-    expect(wargs('--key=').flags.key).to.eql('');
     expect(wargs('--key=value').flags.key).to.eql('value');
   });
 
@@ -420,9 +419,6 @@ describe('wargs()', () => {
     expect(wargs('-=').flags).to.eql({
       '=': true,
     });
-    expect(wargs('--=').flags).to.eql({
-      '': '',
-    });
     expect(a.flags.large).to.eql(true);
     expect(a.data.BAZ).to.eql('buzz');
     expect(a).to.eql(b);
@@ -516,5 +512,13 @@ describe('wargs()', () => {
       },
       params: {},
     });
+  });
+
+  it('should nullify from empty string flags', () => {
+    expect(wargs('--key=').flags.key).to.eql(null);
+    expect(wargs('--=').flags).to.eql({});
+    expect(wargs('-a -b', {
+      string: 'ab',
+    }).flags).to.eql({ a: null, b: null });
   });
 });
