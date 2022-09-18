@@ -2,9 +2,9 @@
   "name": "wargs",
   "version": "0.9.6",
   "main": "dist/wargs.js",
-  "module": "dist/wargs.es.js",
-  "unpkg": "dist/wargs.min.js",
-  "browser": "dist/wargs.min.js",
+  "module": "dist/wargs.mjs",
+  "unpkg": "dist/wargs.cjs",
+  "browser": "dist/wargs.cjs",
   "description": "Wrong args parser",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   "author": "Alvaro Cabrera <pateketrueke@gmail.com> (https://soypache.co)",
   "license": "MIT",
   "files": [
-    "dist/*.js"
+    "dist/*.*js"
   ],
   "scripts": {
     "dev": "npm test -- -w",
@@ -33,8 +33,8 @@
     "build:all": "npm run build:cjs && npm run build:esm && npm run build:umd",
     "build:lib": "esbuild lib/index.js --bundle",
     "build:cjs": "npm run build:lib -- --format=cjs --outfile=dist/wargs.js",
-    "build:esm": "npm run build:lib -- --format=esm --outfile=dist/wargs.es.js",
-    "build:umd": "npm run build:lib -- --platform=browser --outfile=dist/wargs.min.js --global-name=wargs",
+    "build:esm": "npm run build:lib -- --format=esm --outfile=dist/wargs.mjs",
+    "build:umd": "npm run build:lib -- --platform=browser --outfile=dist/wargs.cjs --global-name=wargs",
     "prepublish": "npm run build",
     "pretest": "npm run lint"
   },
