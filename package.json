@@ -1,10 +1,10 @@
 {
   "name": "wargs",
   "version": "0.9.7",
-  "main": "dist/wargs.js",
+  "main": "dist/wargs.cjs",
   "module": "dist/wargs.mjs",
-  "unpkg": "dist/wargs.cjs",
-  "browser": "dist/wargs.cjs",
+  "unpkg": "dist/wargs.js",
+  "browser": "dist/wargs.js",
   "description": "Wrong args parser",
   "repository": {
     "type": "git",
@@ -32,9 +32,9 @@
     "build": "NODE_ENV=production npm run build:all",
     "build:all": "npm run build:cjs && npm run build:esm && npm run build:umd",
     "build:lib": "esbuild lib/index.js --bundle",
-    "build:cjs": "npm run build:lib -- --format=cjs --outfile=dist/wargs.js",
+    "build:cjs": "npm run build:lib -- --format=cjs --outfile=dist/wargs.cjs",
     "build:esm": "npm run build:lib -- --format=esm --outfile=dist/wargs.mjs",
-    "build:umd": "npm run build:lib -- --platform=browser --outfile=dist/wargs.cjs --global-name=wargs",
+    "build:umd": "npm run build:lib -- --platform=browser --outfile=dist/wargs.js --global-name=wargs",
     "prepublish": "npm run build",
     "pretest": "npm run lint"
   },
